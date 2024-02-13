@@ -64,7 +64,7 @@ def main():
         pygame.display.flip()
 
         # render character
-        display.blit(character_image1, (character_x, character_y))
+        display.blit(character_images[0], (character_x, character_y))
         pygame.display.flip()
 
     # quit program
