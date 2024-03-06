@@ -37,23 +37,45 @@ character_image = pygame.transform.scale(character_image, (int(original_characte
 font = pygame.font.Font(None, 48)
 
 # Define game states
-STATE_START = 0
-STATE_STEP1 = 1
-STATE_STEP2 = 2
-STATE_STEP3 = 3
-STATE_STEP4 = 4
-STATE_END = 5
+STATE_START = 1
 
 # Define transition states
 STATE_TRANSITION_OUT = 6
 STATE_TRANSITION_IN = 7
 
 
-# Function to display text
+# Function to display wrapped text every five words
 def display_text(text, x, y, color=WHITE):
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect(midtop=(x, y))
-    screen.blit(text_surface, text_rect)
+    words = text.split()
+    max_width = screen_width  # Maximum width for text
+    lines = []
+    current_line = ''
+    word_count = 0
+
+    for word in words:
+        if word_count < 5:
+            if font.size(current_line + ' ' + word)[0] <= max_width:
+                current_line += ' ' + word
+                word_count += 1
+            else:
+                lines.append(current_line.strip())
+                current_line = word
+                word_count = 1
+        else:
+            lines.append(current_line.strip())
+            current_line = word
+            word_count = 1
+
+    if current_line:
+        lines.append(current_line.strip())
+
+    line_height = font.size(" ")[1]  # Height of each line
+
+    for line in lines:
+        text_surface = font.render(line, True, color)
+        text_rect = text_surface.get_rect(midtop=(x, y))
+        screen.blit(text_surface, text_rect)
+        y += line_height  # Move to the next line
 
 
 # Function to fade the screen
@@ -90,7 +112,7 @@ def fade_screen(character_rect, next_state):
 # Function to display buttons
 def display_buttons(choice1, choice2):
     button_font = pygame.font.Font(None, 36)
-    button_width = 300
+    button_width = 600
     button_height = 100
     button_padding = 40
     button_x = (screen_width - button_width * 2 - button_padding) // 2
@@ -121,8 +143,8 @@ def main():
     global choice1_rect, choice2_rect, current_background, character_rect  # Declare as global
 
     # Define game variables
-    current_state = STATE_START
-    next_state = current_state
+    current_state = 1
+    next_state = 11
     current_background = 0
 
     # Initialize character rectangle
@@ -136,53 +158,74 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if current_state == STATE_START:
+                if current_state == 1:
                     if choice1_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_STEP1
+                        next_state = 11
                     elif choice2_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_STEP2
-                elif current_state == STATE_STEP1:
+                        next_state = 12
+                elif current_state == 11:
                     if choice1_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_STEP3
+                        next_state = 111
                     elif choice2_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_STEP4
-                elif current_state == STATE_STEP2:
+                        next_state = 112
+                elif current_state == 12:
                     if choice1_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_STEP4
+                        next_state = 121
                     elif choice2_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_END
-                elif current_state == STATE_STEP3 or current_state == STATE_STEP4:
+                        next_state = 122
+                elif current_state == 112:
                     current_state = STATE_TRANSITION_OUT
                     next_state = STATE_START
-                elif current_state == STATE_END:
-                    if event.button == 1:
+                elif current_state == 111:
+                    if choice1_rect.collidepoint(event.pos):
                         current_state = STATE_TRANSITION_OUT
-                        next_state = STATE_START
+                        next_state = 1111
+                    elif choice2_rect.collidepoint(event.pos):
+                        current_state = STATE_TRANSITION_OUT
+                        next_state = 1112
 
         # Update screen
         screen.blit(background_images[current_background], (0, 0))
         if current_state == STATE_START:
-            display_text("Welcome to the Omnibus Forest!", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Take the left path", "Take the right path")
-        elif current_state == STATE_STEP1:
-            display_text("You encounter a river. What do you do?", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Cross the river", "Follow the river downstream")
-        elif current_state == STATE_STEP2:
-            display_text("You find a hidden cave. Do you enter?", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Enter the cave", "Continue exploring the forest")
-        elif current_state == STATE_STEP3:
-            display_text("You cross the river and find a treasure chest!", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Return to the forest", "")
-        elif current_state == STATE_STEP4:
-            display_text("You follow the river and discover a friendly village.", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Stay in the village", "")
-        elif current_state == STATE_END:
+            display_text("You wake up in an ominous forest. To your right you hear barking noises and to your left "
+                         "you see a pillar of smoke as if it is coming from a campfire. Do you:", screen_width // 2,
+                         150, color=CYAN)
+            choice1_rect, choice2_rect = display_buttons("Go to your right and explore the noises", "Go to your left "
+                                                                                                    "and look for a "
+                                                                                                    "campfire")
+        elif current_state == 11:
+            display_text("You walk towards the noises and see an old man and a pack of wolves.  Do you:", screen_width
+                         // 2, 150, color=CYAN)
+            choice1_rect, choice2_rect = display_buttons("Go towards them calmly and ask the old man for some help "
+                                                         "around this strange place", "Pick up a stick from the "
+                                                                                      "ground and run towards the man "
+                                                                                      "in an attempt to attack him "
+                                                                                      "and steal the wolves")
+        elif current_state == 12:
+            display_text("You walk towards the smoke and see a dying campfire with someone’s belongings around it. Do "
+                         "you:", screen_width // 2, 150, color=CYAN)
+            choice1_rect, choice2_rect = display_buttons("Collect all the belongings and escape", "Look around for "
+                                                                                                  "the people whose "
+                                                                                                  "campfire and "
+                                                                                                  "belongings these "
+                                                                                                  "are")
+        elif current_state == 111:
+            display_text("He tells you about the group so you start walking towards the place you saw the smoke "
+                         "pillar since that is the only other place you ever saw evidence of other people.",
+                         screen_width // 2, 150, color=CYAN)
+            current_state = STATE_TRANSITION_OUT
+            next_state = 112
+        elif current_state == 122:
+            display_text("You start taking all their stuff when a group of five big guys jump from the bushes and "
+                         "threaten you.", screen_width // 2, 150, color=CYAN)
+            choice1_rect, choice2_rect = display_buttons("Beg for mercy", "Start howling at the moon")
+        elif current_state == 121:
             display_text("Congratulations! You completed the adventure. Click to restart.", screen_width // 2, 150,
                          color=CYAN)
 
