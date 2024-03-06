@@ -48,43 +48,6 @@ START_TEXT = ("You wake up in an ominous forest. To your right you hear barking 
               "pillar of smoke as if it is coming from a campfire. Do you:")
 
 
-def display_text(text, x, y, color=WHITE):
-    words = text.split()
-    max_width = screen_width  # Maximum width for text
-    lines = []
-    current_line = ''
-    word_count = 0
-    total_height = 0  # Initialize total height
-
-    for word in words:
-        if word_count < 10:  # Change the word count to 10
-            if font.size(current_line + ' ' + word)[0] <= max_width:
-                current_line += ' ' + word
-                word_count += 1
-            else:
-                lines.append(current_line.strip())
-                current_line = word
-                word_count = 1
-        else:
-            lines.append(current_line.strip())
-            current_line = word
-            word_count = 1
-
-    if current_line:
-        lines.append(current_line.strip())
-
-    line_height = font.size(" ")[1]  # Height of each line
-
-    for line in lines:
-        text_surface = font.render(line, True, color)
-        text_rect = text_surface.get_rect(midtop=(x, y))
-        screen.blit(text_surface, text_rect)
-        y += line_height  # Move to the next line
-        total_height += line_height  # Accumulate total height
-
-    return total_height  # Return the total height after displaying the text
-
-
 # Function to fade the screen
 def fade_screen(character_rect, next_state):
     fade_surface = pygame.Surface((screen_width, screen_height))
@@ -116,19 +79,56 @@ def fade_screen(character_rect, next_state):
     return next_state
 
 
-def display_buttons(choice1, choice2, text_height):
+def display_text(text, x, y, color=WHITE, max_width=None):
+    words = text.split()
+    max_width = max_width or screen_width  # Maximum width for text
+    lines = []
+    current_line = ''
+    word_count = 0
+    total_height = 0  # Initialize total height
+
+    for word in words:
+        if word_count < 20:  # Change the word count to 10
+            if font.size(current_line + ' ' + word)[0] <= max_width:
+                current_line += ' ' + word
+                word_count += 1
+            else:
+                lines.append(current_line.strip())
+                current_line = word
+                word_count = 1
+        else:
+            lines.append(current_line.strip())
+            current_line = word
+            word_count = 1
+
+    if current_line:
+        lines.append(current_line.strip())
+
+    line_height = font.size(" ")[1]  # Height of each line
+
+    for line in lines:
+        text_surface = font.render(line, True, color)
+        text_rect = text_surface.get_rect(midtop=(x, y))
+        screen.blit(text_surface, text_rect)
+        y += line_height  # Move to the next line
+        total_height += line_height  # Accumulate total height
+
+    return total_height  # Return the total height after displaying the text
+
+
+def display_buttons(choice1, choice2, x, y):
     button_font = pygame.font.Font(None, 36)
     button_width = 600
     button_padding = 40
     button_x = (screen_width - button_width * 2 - button_padding) // 2
-    button_y = (screen_height - text_height - 150) // 2  # Center the buttons vertically
+    button_y = y + 50  # Adjusted button y position to give space between regular text and buttons
 
     # Render button texts with word wrapping (adjust the words_per_line parameter)
     button1_texts = wrap_text(choice1, 5)  # Adjust the maximum line length
     button2_texts = wrap_text(choice2, 5)
 
     button1_height = len(button1_texts) * (
-                button_font.size(" ")[1] + 5)  # Calculate button height based on text wrapping
+            button_font.size(" ")[1] + 5)  # Calculate button height based on text wrapping
     button2_height = len(button2_texts) * (button_font.size(" ")[1] + 5)
 
     # Set a minimum height for the buttons
@@ -140,13 +140,13 @@ def display_buttons(choice1, choice2, text_height):
     button1_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     button2_rect = pygame.Rect(button_x + button_width + button_padding, button_y, button_width, button_height)
 
-    pygame.draw.rect(screen, PURPLE, button1_rect)
-    pygame.draw.rect(screen, PURPLE, button2_rect)
+    pygame.draw.rect(screen, PURPLE, button1_rect, border_radius=10)  # Set the border radius for rounded corners
+    pygame.draw.rect(screen, PURPLE, button2_rect, border_radius=10)
 
-    render_text(button1_texts, button1_rect, button_font, WHITE)
-    render_text(button2_texts, button2_rect, button_font, WHITE)
+    render_text(button1_texts, button1_rect, button_font, WHITE, offset_y=10)  # Adjusted text position
+    render_text(button2_texts, button2_rect, button_font, WHITE, offset_y=10)  # Adjusted text position
 
-    return button1_rect, button2_rect
+    return button1_rect, button2_rect, button_height  # Return the button heights
 
 
 def wrap_text(text, words_per_line):
@@ -155,14 +155,18 @@ def wrap_text(text, words_per_line):
     return wrapped_text
 
 
-def render_text(text_lines, button_rect, font, color):
+def render_text(text_lines, button_rect, font, color, offset_y=0):  # Added an offset_y parameter
     line_height = font.size(" ")[1]
     y = button_rect.y
+    total_height = 0  # Initialize total height
     for line in text_lines:
         text_surface = font.render(line, True, color)
-        text_rect = text_surface.get_rect(center=(button_rect.centerx, y + line_height // 2))
+        text_rect = text_surface.get_rect(
+            center=(button_rect.centerx, y + line_height // 2 + offset_y))  # Added offset_y
         screen.blit(text_surface, text_rect)
         y += line_height + 5  # Add some vertical spacing between lines
+        total_height += line_height + 5  # Accumulate total height including spacing
+    return total_height  # Return the total height of rendered text
 
 
 # Main function
@@ -242,27 +246,24 @@ def main():
         screen.blit(background_images[current_background], (0, 0))
         text_height = display_text(current_text, screen_width // 2, 150, color=CYAN)
         if current_state == STATE_START:
-            choice1_rect, choice2_rect = display_buttons("Go to your right and explore the noises", "Go to your left "
-                                                                                                    "and look for a "
-                                                                                                    "campfire",
-                                                         text_height)
+            choice1_rect, choice2_rect, button_height = display_buttons("Go to your right and explore the noises",
+                                                                        "Go to your left and look for a campfire",
+                                                                        screen_width // 2, 400 - text_height // 2)
         elif current_state == 11:
-            choice1_rect, choice2_rect = display_buttons("Go towards them calmly and ask the old man for some help "
-                                                         "around this strange place", "Pick up a stick from the "
-                                                                                      "ground and run towards the man "
-                                                                                      "in an attempt to attack him "
-                                                                                      "and steal the wolves",
-                                                         text_height)
+            choice1_rect, choice2_rect, button_height = display_buttons(
+                "Go towards them calmly and ask the old man for some help around this strange place",
+                "Pick up a stick from the ground and run towards the man in an attempt to attack him and steal the "
+                "wolves",
+                screen_width // 2, 400 - text_height // 2)
         elif current_state == 12:
-            choice1_rect, choice2_rect = display_buttons("Collect all the belongings and escape", "Look around for "
-                                                                                                  "the people whose "
-                                                                                                  "campfire and "
-                                                                                                  "belongings these "
-                                                                                                  "are",
-                                                         text_height)
+            choice1_rect, choice2_rect, button_height = display_buttons("Collect all the belongings and escape",
+                                                                        "Look around for the people whose "
+                                                                        "campfire and belongings these are",
+                                                                        screen_width // 2, 400 - text_height // 2)
         elif current_state == 111:
             # Example usage, adjust as needed
-            choice1_rect, choice2_rect = display_buttons("Option 1", "Option 2", text_height)
+            choice1_rect, choice2_rect, button_height = display_buttons("Option 1", "Option 2",
+                                                                        screen_width // 2, 400 - text_height // 2)
 
         # Other state conditions...
 
