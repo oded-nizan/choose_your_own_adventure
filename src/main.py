@@ -12,8 +12,8 @@ PURPLE = (128, 0, 128)
 pygame.init()
 
 # Set up the screen
-screen_width = 1920
-screen_height = 1080
+screen_width = 2550
+screen_height = 1440
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Choose Your Own Adventure - Omnibus Forest")
 
@@ -27,7 +27,7 @@ background_images = [pygame.transform.scale(bg, (screen_width, screen_height)) f
 
 # Load and scale character image
 character_image = pygame.image.load(os.path.join('src', 'images', 'character.png')).convert_alpha()
-character_height = screen_height // 3
+character_height = screen_height // 2.5
 original_character_rect = character_image.get_rect()
 scale_factor = character_height / original_character_rect.height
 character_image = pygame.transform.scale(character_image, (int(original_character_rect.width * scale_factor),
@@ -41,19 +41,23 @@ STATE_START = 1
 
 # Define transition states
 STATE_TRANSITION_OUT = 6
-STATE_TRANSITION_IN = 7
+STATE_TRANSITION_IN = STATE_START
+
+# Define game state's text
+START_TEXT = ("You wake up in an ominous forest. To your right you hear barking noises and to your left you see a "
+              "pillar of smoke as if it is coming from a campfire. Do you:")
 
 
-# Function to display wrapped text every five words
 def display_text(text, x, y, color=WHITE):
     words = text.split()
     max_width = screen_width  # Maximum width for text
     lines = []
     current_line = ''
     word_count = 0
+    total_height = 0  # Initialize total height
 
     for word in words:
-        if word_count < 5:
+        if word_count < 10:  # Change the word count to 10
             if font.size(current_line + ' ' + word)[0] <= max_width:
                 current_line += ' ' + word
                 word_count += 1
@@ -76,6 +80,9 @@ def display_text(text, x, y, color=WHITE):
         text_rect = text_surface.get_rect(midtop=(x, y))
         screen.blit(text_surface, text_rect)
         y += line_height  # Move to the next line
+        total_height += line_height  # Accumulate total height
+
+    return total_height  # Return the total height after displaying the text
 
 
 # Function to fade the screen
@@ -109,32 +116,53 @@ def fade_screen(character_rect, next_state):
     return next_state
 
 
-# Function to display buttons
-def display_buttons(choice1, choice2):
+def display_buttons(choice1, choice2, text_height):
     button_font = pygame.font.Font(None, 36)
     button_width = 600
-    button_height = 100
     button_padding = 40
     button_x = (screen_width - button_width * 2 - button_padding) // 2
-    button_y = 400  # Adjusted button position
+    button_y = (screen_height - text_height - 150) // 2  # Center the buttons vertically
+
+    # Render button texts with word wrapping (adjust the words_per_line parameter)
+    button1_texts = wrap_text(choice1, 5)  # Adjust the maximum line length
+    button2_texts = wrap_text(choice2, 5)
+
+    button1_height = len(button1_texts) * (
+                button_font.size(" ")[1] + 5)  # Calculate button height based on text wrapping
+    button2_height = len(button2_texts) * (button_font.size(" ")[1] + 5)
+
+    # Set a minimum height for the buttons
+    min_button_height = 100  # Set your desired minimum height here
+
+    # Determine the height of the buttons based on the taller button and the minimum height
+    button_height = max(min_button_height, max(button1_height, button2_height))
 
     button1_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    button2_rect = pygame.Rect(button_x + button_width + button_padding, button_y,
-                               button_width, button_height)
+    button2_rect = pygame.Rect(button_x + button_width + button_padding, button_y, button_width, button_height)
 
     pygame.draw.rect(screen, PURPLE, button1_rect)
     pygame.draw.rect(screen, PURPLE, button2_rect)
 
-    button1_text = button_font.render(choice1, True, WHITE)
-    button2_text = button_font.render(choice2, True, WHITE)
-
-    button1_text_rect = button1_text.get_rect(center=button1_rect.center)
-    button2_text_rect = button2_text.get_rect(center=button2_rect.center)
-
-    screen.blit(button1_text, button1_text_rect)
-    screen.blit(button2_text, button2_text_rect)
+    render_text(button1_texts, button1_rect, button_font, WHITE)
+    render_text(button2_texts, button2_rect, button_font, WHITE)
 
     return button1_rect, button2_rect
+
+
+def wrap_text(text, words_per_line):
+    words = text.split()
+    wrapped_text = [' '.join(words[i:i + words_per_line]) for i in range(0, len(words), words_per_line)]
+    return wrapped_text
+
+
+def render_text(text_lines, button_rect, font, color):
+    line_height = font.size(" ")[1]
+    y = button_rect.y
+    for line in text_lines:
+        text_surface = font.render(line, True, color)
+        text_rect = text_surface.get_rect(center=(button_rect.centerx, y + line_height // 2))
+        screen.blit(text_surface, text_rect)
+        y += line_height + 5  # Add some vertical spacing between lines
 
 
 # Main function
@@ -146,6 +174,7 @@ def main():
     current_state = 1
     next_state = 11
     current_background = 0
+    current_text = START_TEXT
 
     # Initialize character rectangle
     character_rect = character_image.get_rect(midbottom=(screen_width // 2, screen_height - 100))
@@ -160,74 +189,82 @@ def main():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if current_state == 1:
                     if choice1_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 1
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 11
+                        current_text = "You walk towards the noises and see an old man and a pack of wolves.  Do you:"
                     elif choice2_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 2
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 12
+                        current_text = ("You walk towards the smoke and see a dying campfire with someone’s belongings "
+                                        "around it. Do you:")
                 elif current_state == 11:
                     if choice1_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 1
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 111
+                        current_text = ("You walk towards the old man and tell him that you really need his help. He "
+                                        "agrees to help you but only after you help him get back his daughter who is "
+                                        "a little goth girl that ran away from home and is hanging out with a group "
+                                        "of bandits. Do you:")
                     elif choice2_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 2
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 112
+                        current_text = "You start running towards him but the wolves jump you and knock you out…"
                 elif current_state == 12:
                     if choice1_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 1
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 121
+                        current_text = ("You start taking all their stuff when a group of five big guys jump from the "
+                                        "bushes and threaten you. Do you:")
                     elif choice2_rect.collidepoint(event.pos):
+                        next_state = current_state * 10 + 2
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 122
+                        current_text = ("You look around calling “come out wherever you are” and a little goth girl "
+                                        "with pig tails comes out from the bushes and asks for her stuff back. Do you:")
                 elif current_state == 112:
-                    current_state = STATE_TRANSITION_OUT
                     next_state = STATE_START
+                    current_state = STATE_TRANSITION_OUT
+                    current_text = START_TEXT
                 elif current_state == 111:
                     if choice1_rect.collidepoint(event.pos):
+                        next_state = 12
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 1111
+                        current_text = ("He tells you about the group so you start walking towards the place you saw "
+                                        "the smoke pillar since that is the only other place you ever saw evidence of"
+                                        " other people.")
                     elif choice2_rect.collidepoint(event.pos):
+                        next_state = STATE_START
                         current_state = STATE_TRANSITION_OUT
-                        next_state = 1112
+                        current_text = "He thinks you’re autistic and it’s contagious so he knocks you out..."
+
+        STATE_TRANSITION_IN = next_state
 
         # Update screen
         screen.blit(background_images[current_background], (0, 0))
+        text_height = display_text(current_text, screen_width // 2, 150, color=CYAN)
         if current_state == STATE_START:
-            display_text("You wake up in an ominous forest. To your right you hear barking noises and to your left "
-                         "you see a pillar of smoke as if it is coming from a campfire. Do you:", screen_width // 2,
-                         150, color=CYAN)
             choice1_rect, choice2_rect = display_buttons("Go to your right and explore the noises", "Go to your left "
                                                                                                     "and look for a "
-                                                                                                    "campfire")
+                                                                                                    "campfire",
+                                                         text_height)
         elif current_state == 11:
-            display_text("You walk towards the noises and see an old man and a pack of wolves.  Do you:", screen_width
-                         // 2, 150, color=CYAN)
             choice1_rect, choice2_rect = display_buttons("Go towards them calmly and ask the old man for some help "
                                                          "around this strange place", "Pick up a stick from the "
                                                                                       "ground and run towards the man "
                                                                                       "in an attempt to attack him "
-                                                                                      "and steal the wolves")
+                                                                                      "and steal the wolves",
+                                                         text_height)
         elif current_state == 12:
-            display_text("You walk towards the smoke and see a dying campfire with someone’s belongings around it. Do "
-                         "you:", screen_width // 2, 150, color=CYAN)
             choice1_rect, choice2_rect = display_buttons("Collect all the belongings and escape", "Look around for "
                                                                                                   "the people whose "
                                                                                                   "campfire and "
                                                                                                   "belongings these "
-                                                                                                  "are")
+                                                                                                  "are",
+                                                         text_height)
         elif current_state == 111:
-            display_text("He tells you about the group so you start walking towards the place you saw the smoke "
-                         "pillar since that is the only other place you ever saw evidence of other people.",
-                         screen_width // 2, 150, color=CYAN)
-            current_state = STATE_TRANSITION_OUT
-            next_state = 112
-        elif current_state == 122:
-            display_text("You start taking all their stuff when a group of five big guys jump from the bushes and "
-                         "threaten you.", screen_width // 2, 150, color=CYAN)
-            choice1_rect, choice2_rect = display_buttons("Beg for mercy", "Start howling at the moon")
-        elif current_state == 121:
-            display_text("Congratulations! You completed the adventure. Click to restart.", screen_width // 2, 150,
-                         color=CYAN)
+            # Example usage, adjust as needed
+            choice1_rect, choice2_rect = display_buttons("Option 1", "Option 2", text_height)
+
+        # Other state conditions...
 
         if current_state == STATE_TRANSITION_OUT:
             next_state = fade_screen(character_rect, next_state)
