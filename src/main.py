@@ -218,7 +218,7 @@ def main():
                                             "who is a little goth girl that ran away from home and is hanging out "
                                             "with a group of bandits. Do you:")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = current_state * 10 + 2
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = "You start running towards him but the wolves jump you and knock you out…"
                     case 12:
@@ -440,40 +440,32 @@ def main():
                 choice1_rect, choice2_rect, button_height = display_buttons(
                     "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
                     "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
-                    "from"
-                    "the bushes and asks for her stuff back.",
+                    "from the bushes and asks for her stuff back.",
                     screen_width // 2, 400 - text_height // 2)
             case 111:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
-                    screen_width // 2, 400 - text_height // 2)
-            case 112:
-                choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
-                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
-                    "from"
-                    "the bushes and asks for her stuff back.",
+                    "Say you will help him and ask for more information",
+                    "Say you’re afraid of girls",
                     screen_width // 2, 400 - text_height // 2)
             case 121:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Sample Option 1 Text",
-                    "Sample Option 2 Text",
+                    "Beg for mercy",
+                    "Start howling at the moon",
                     screen_width // 2, 400 - text_height // 2)
             case 122:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Sample Option 1 Text",
-                    "Sample Option 2 Text",
+                    "Give her the stuff back",
+                    "Say to her “no this is mine now beach”",
                     screen_width // 2, 400 - text_height // 2)
             case 1211:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Sample Option 1 Text",
-                    "Sample Option 2 Text",
+                    "Jump to see if by change you can skydive without a parachute",
+                    "Start running away",
                     screen_width // 2, 400 - text_height // 2)
             case 1221:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Sample Option 1 Text",
-                    "Sample Option 2 Text",
+                    "Agree to their request",
+                    "Say you don’t know how to do that",
                     screen_width // 2, 400 - text_height // 2)
             case 2:
                 choice1_rect, choice2_rect, button_height = display_buttons(
@@ -482,55 +474,54 @@ def main():
                     screen_width // 2, 400 - text_height // 2)
             case 21:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Go towards the old man and tell him that you really need his help.",
-                    "Start running towards him but the wolves jump you and knock you out…",
+                    "Go towards them calmly and ask the old man for some help around this strange place",
+                    "Pick up a stick from the ground and run towards the man in an attempt to attack him and steal "
+                    "the wolves",
                     screen_width // 2, 400 - text_height // 2)
             case 22:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
-                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
-                    "from"
-                    "the bushes and asks for her stuff back.",
+                    "Collect all the belongings and escape",
+                    "Look around for the people whose campfire and belongings these are",
                     screen_width // 2, 400 - text_height // 2)
             case 211:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Give him the gold coin",
+                    "Decline his offer",
                     screen_width // 2, 400 - text_height // 2)
             case 221:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Beg for mercy",
+                    "Start howling at the moon",
                     screen_width // 2, 400 - text_height // 2)
             case 222:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Give her the stuff back",
+                    "Say to her “no this is mine now beach”",
                     screen_width // 2, 400 - text_height // 2)
             case 2111:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Start going towards the pillar of smoke",
+                    "Say “fuck you daughter”",
                     screen_width // 2, 400 - text_height // 2)
             case 2211:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Jump to see if by change you can skydive without a parachute",
+                    "Start running away",
                     screen_width // 2, 400 - text_height // 2)
             case 2221:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Agree to their request",
+                    "Say you don’t know how to do that",
                     screen_width // 2, 400 - text_height // 2)
             case 21111:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Steal the stuff",
+                    "Look for the owner",
                     screen_width // 2, 400 - text_height // 2)
             case 211112:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Option 1 Sample Text",
-                    "Option 2 Sample Text",
+                    "Say you can’t do that",
+                    "Agree to their request",
                     screen_width // 2, 400 - text_height // 2)
 
         if current_state == STATE_TRANSITION_OUT:
