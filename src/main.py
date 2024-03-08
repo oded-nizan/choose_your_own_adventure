@@ -12,8 +12,8 @@ PURPLE = (128, 0, 128)
 pygame.init()
 
 # Set up the screen
-screen_width = 2560
-screen_height = 1440
+screen_width = 1920
+screen_height = 1080
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Choose Your Own Adventure - Omnibus Forest")
 
@@ -140,7 +140,7 @@ def display_buttons(choice1, choice2, x, y):
     min_button_height = 100  # Set your desired minimum height here
 
     # Determine the height of the buttons based on the taller button and the minimum height
-    button_height = max(min_button_height, max(button1_height, button2_height))
+    button_height = max(min_button_height, max(button1_height, button2_height)) + 30
 
     button1_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     button2_rect = pygame.Rect(button_x + button_width + button_padding, button_y, button_width, button_height)
