@@ -38,6 +38,9 @@ font = pygame.font.Font(None, 48)
 
 # Define game states
 STATE_START = 1
+STATE_NEXT = 2
+STATE_TO_START = 3
+STATE_TO_NEXT = 4
 
 # Define transition states
 STATE_TRANSITION_OUT = 6
@@ -46,6 +49,8 @@ STATE_TRANSITION_IN = STATE_START
 # Define game state's text
 START_TEXT = ("You wake up in an ominous forest. To your right you hear barking noises and to your left you see a "
               "pillar of smoke as if it is coming from a campfire. Do you:")
+NEXT_TEXT = ("You wake up in an ominous forest with a gold coin in your pocket.  To your right you hear barking "
+             "noises and to your left you see a pillar of smoke as if it is coming from a campfire. Do you:")
 
 
 # Function to fade the screen
@@ -176,7 +181,7 @@ def main():
 
     # Define game variables
     current_state = 1
-    next_state = 11
+    next_state = current_state * 10 + 1
     current_background = 0
     current_text = START_TEXT
 
@@ -191,6 +196,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Updated section
                 match current_state:
                     case 1:
                         if choice1_rect.collidepoint(event.pos):
@@ -228,9 +234,9 @@ def main():
                                             "with pig tails comes out from the bushes and asks for her stuff back. Do "
                                             "you:")
                     case 112:
-                        next_state = STATE_START
+                        next_state = STATE_TO_START
                         current_state = STATE_TRANSITION_OUT
-                        current_text = START_TEXT
+                        current_text = "You start running towards him but the wolves jump you and knock you out…"
                     case 111:
                         if choice1_rect.collidepoint(event.pos):
                             next_state = 12
@@ -239,89 +245,293 @@ def main():
                                             "saw the smoke pillar since that is the only other place you ever saw "
                                             "evidence of other people.")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = "He thinks you’re autistic and it’s contagious so he knocks you out..."
                     case 121:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = 1211
+                            next_state = current_state * 10 + 1
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("They say they will only let you live if you will teach them how to "
                                             "skydive without a parachute and they walk you towards a nearby cliff."
                                             "Do you:")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = "He thinks you’re autistic and it’s contagious so he knocks you out..."
                     case 122:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = 1221
+                            next_state = current_state * 10 + 1
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("You give her the stuff back and a group of five big guys jump out from "
                                             "the bushes. They hand you a gold coin and you put it in your pocket. "
                                             "They start begging for you to teach them how to skydive without a "
                                             "parachute. Do you:")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("A group of five big guys jump out of the bushes saying that you made a "
                                             "big mistake threatening their champion. They knock you out…")
                     case 1211:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = "You jump and after a short fall you hit the ground getting knocked out…"
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("You start running and one of them tackles you to the ground and you  get "
                                             "knocked out…")
                     case 1221:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = 2
+                            next_state = STATE_NEXT
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("You agree to their request, they lead you to a nearby cliff and you jump "
                                             "off, hit the ground and get knocked out…")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = STATE_TO_START
                             current_state = STATE_TRANSITION_OUT
                             current_text = "They tell you that’s not an option and knock you out…"
                     case 2:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = 21
+                            next_state = current_state * 10 + 1
                             current_state = STATE_TRANSITION_OUT
-                            current_text = ("You agree to their request, they lead you to a nearby cliff and you jump "
-                                            "off, hit the ground and get knocked out…")
+                            current_text = ("You walk towards the noises and see an old man and a pack of wolves.  Do "
+                                            "you:")
                         elif choice2_rect.collidepoint(event.pos):
-                            next_state = STATE_START
+                            next_state = current_state * 10 + 2
                             current_state = STATE_TRANSITION_OUT
-                            current_text = "They tell you that’s not an option and knock you out…"
+                            current_text = ("You walk towards the smoke and see a dying campfire with someone’s "
+                                            "belongings around it. Do you:")
+                    case 21:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You walk towards the old man and tell him that you really need his help. "
+                                            "He agrees to help you but asks for your gold coin first. Do you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "You start running towards him but the wolves jump you and knock you out…"
+                    case 22:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You start taking all their stuff when a group of five big guys jump from "
+                                            "the bushes and threaten you. Do you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 2
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You look around calling “come out wherever you are” and a little goth "
+                                            "girl with pig tails comes out from the bushes and asks for her stuff "
+                                            "back. Do you:")
+                    case 211:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("He teaches you how to skydive without a parachute and asks you to go get "
+                                            "his little daughter back home. Do you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "He thinks you’re autistic and it’s contagious so he knocks you out..."
+                    case 221:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("They say they will only let you live if you will teach them how to "
+                                            "skydive without a parachute and they walk you towards a nearby cliff. Do"
+                                            " you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "They think you’re autistic and it’s contagious so they knock you out..."
+                    case 222:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You give her the stuff back and a group of five big guys jump out from "
+                                            "the bushes. They start begging for you to teach them how to skydive "
+                                            "without a parachute. Do you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("A group of five big guys jump out of the bushes saying that you made a "
+                                            "big mistake threatening their champion. They knock you out…")
+                    case 2111:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 1
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You go towards the smoke and see a dying campfire with someone’s "
+                                            "belongings around it. Do you:")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "He thinks you're autistic and it's contagious and knocks you out…"
+                    case 2211:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "You jump and after a short fall you hit the ground getting knocked out…"
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You start running and one of them tackles you to the ground and you  get "
+                                            "knocked out…")
+                    case 2221:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "You agree to their request…"
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "They say “sounds like a you problem” and knock you out…"
+                    case 21111:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You attempt to steal the stuff but a group of five big guys jumps from "
+                                            "the bushes, lynches you and knocks you out…")
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 2
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("You call out “come out come out wherever you are” and a group of five big "
+                                            "guys and a little goth girl jump from the bushes and thank you for not "
+                                            "stealing their stuff. They start begging you to teach them how to "
+                                            "skydive without a parachute. Do you:")
+                    case 211112:
+                        if choice1_rect.collidepoint(event.pos):
+                            next_state = STATE_TO_NEXT
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = "They get angry, attack you and knock you out."
+                        elif choice2_rect.collidepoint(event.pos):
+                            next_state = current_state * 10 + 2
+                            current_state = STATE_TRANSITION_OUT
+                            current_text = ("They lead you to a nearby cliff and pressure you to jump. You jump off "
+                                            "and surprisingly you begin to float over to a nearby mountain where you "
+                                            "find a bunch of gold. Congratulations you won the game!.")
+                    case 3:
+                        next_state = STATE_START
+                        current_state = STATE_TRANSITION_OUT
+                        current_text = START_TEXT
+                    case 4:
+                        next_state = STATE_NEXT
+                        current_state = STATE_TRANSITION_OUT
+                        current_text = NEXT_TEXT
 
         STATE_TRANSITION_IN = next_state
 
         # Update screen
         screen.blit(background_images[current_background], (0, 0))
         text_height = display_text(current_text, screen_width // 2, 150, color=CYAN)
-        if current_state == STATE_START:
-            choice1_rect, choice2_rect, button_height = display_buttons("Go to your right and explore the noises",
-                                                                        "Go to your left and look for a campfire",
-                                                                        screen_width // 2, 400 - text_height // 2)
-        elif current_state == 11:
-            choice1_rect, choice2_rect, button_height = display_buttons(
-                "Go towards them calmly and ask the old man for some help around this strange place",
-                "Pick up a stick from the ground and run towards the man in an attempt to attack him and steal the "
-                "wolves",
-                screen_width // 2, 400 - text_height // 2)
-        elif current_state == 12:
-            choice1_rect, choice2_rect, button_height = display_buttons("Collect all the belongings and escape",
-                                                                        "Look around for the people whose "
-                                                                        "campfire and belongings these are",
-                                                                        screen_width // 2, 400 - text_height // 2)
-        elif current_state == 111:
-            choice1_rect, choice2_rect, button_height = display_buttons("Option 1", "Option 2",
-                                                                        screen_width // 2, 400 - text_height // 2)
-
-        # Other state conditions...
+        match current_state:
+            case 1:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Go to your right and explore the noises",
+                    "Go to your left and look for a campfire",
+                    screen_width // 2, 400 - text_height // 2)
+            case 11:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Go towards the old man and tell him that you really need his help.",
+                    "Start running towards him but the wolves jump you and knock you out…",
+                    screen_width // 2, 400 - text_height // 2)
+            case 12:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
+                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
+                    "from"
+                    "the bushes and asks for her stuff back.",
+                    screen_width // 2, 400 - text_height // 2)
+            case 111:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 112:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
+                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
+                    "from"
+                    "the bushes and asks for her stuff back.",
+                    screen_width // 2, 400 - text_height // 2)
+            case 121:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Sample Option 1 Text",
+                    "Sample Option 2 Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 122:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Sample Option 1 Text",
+                    "Sample Option 2 Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 1211:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Sample Option 1 Text",
+                    "Sample Option 2 Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 1221:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Sample Option 1 Text",
+                    "Sample Option 2 Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 2:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Go to your right and explore the noises",
+                    "Go to your left and look for a campfire",
+                    screen_width // 2, 400 - text_height // 2)
+            case 21:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Go towards the old man and tell him that you really need his help.",
+                    "Start running towards him but the wolves jump you and knock you out…",
+                    screen_width // 2, 400 - text_height // 2)
+            case 22:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
+                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
+                    "from"
+                    "the bushes and asks for her stuff back.",
+                    screen_width // 2, 400 - text_height // 2)
+            case 211:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 221:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 222:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 2111:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 2211:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 2221:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 21111:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
+            case 211112:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Option 1 Sample Text",
+                    "Option 2 Sample Text",
+                    screen_width // 2, 400 - text_height // 2)
 
         if current_state == STATE_TRANSITION_OUT:
             next_state = fade_screen(character_rect, next_state)
