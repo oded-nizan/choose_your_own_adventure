@@ -12,7 +12,7 @@ PURPLE = (128, 0, 128)
 pygame.init()
 
 # Set up the screen
-screen_width = 2550
+screen_width = 2560
 screen_height = 1440
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Choose Your Own Adventure - Omnibus Forest")
@@ -522,6 +522,16 @@ def main():
                 choice1_rect, choice2_rect, button_height = display_buttons(
                     "Say you can’t do that",
                     "Agree to their request",
+                    screen_width // 2, 400 - text_height // 2)
+            case 3:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Start again",
+                    "Start again",
+                    screen_width // 2, 400 - text_height // 2)
+            case 4:
+                choice1_rect, choice2_rect, button_height = display_buttons(
+                    "Start again",
+                    "Start again",
                     screen_width // 2, 400 - text_height // 2)
 
         if current_state == STATE_TRANSITION_OUT:
