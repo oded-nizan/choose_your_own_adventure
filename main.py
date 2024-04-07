@@ -5,7 +5,7 @@ import pygame
 # Set up colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-CYAN = (0, 255, 255)
+CYAN = (0, 0, 255)
 PURPLE = (128, 0, 128)
 
 # Initialize Pygame
@@ -84,7 +84,7 @@ def fade_screen(character_rect, next_state):
     return next_state
 
 
-def display_text(text, x, y, color=WHITE, max_width=None):
+def display_text(text, x, y, color=WHITE, max_width=None, line_spacing=10):
     words = text.split()
     max_width = max_width or screen_width  # Maximum width for text
     lines = []
@@ -112,11 +112,17 @@ def display_text(text, x, y, color=WHITE, max_width=None):
     line_height = font.size(" ")[1]  # Height of each line
 
     for line in lines:
+        # Render text onto a surface with a gray background
         text_surface = font.render(line, True, color)
-        text_rect = text_surface.get_rect(midtop=(x, y))
-        screen.blit(text_surface, text_rect)
-        y += line_height  # Move to the next line
-        total_height += line_height  # Accumulate total height
+        text_rect = text_surface.get_rect()
+        text_surface_with_bg = pygame.Surface((text_rect.width + 10, text_rect.height + 10))  # Add some padding for
+        # the background
+        text_surface_with_bg.fill((200, 200, 200))  # Gray background color
+        text_surface_with_bg.blit(text_surface, (5, 5))  # Blit the text onto the background surface
+        text_rect = text_surface_with_bg.get_rect(midtop=(x, y))
+        screen.blit(text_surface_with_bg, text_rect)
+        y += line_height + line_spacing  # Move to the next line with additional spacing
+        total_height += line_height + line_spacing  # Accumulate total height with additional spacing
 
     return total_height  # Return the total height after displaying the text
 
@@ -284,7 +290,7 @@ def main():
                                             "knocked out…")
                     case 1221:
                         if choice1_rect.collidepoint(event.pos):
-                            next_state = STATE_NEXT
+                            next_state = STATE_TO_NEXT
                             current_state = STATE_TRANSITION_OUT
                             current_text = ("You agree to their request, they lead you to a nearby cliff and you jump "
                                             "off, hit the ground and get knocked out…")
@@ -434,7 +440,8 @@ def main():
             case 11:
                 choice1_rect, choice2_rect, button_height = display_buttons(
                     "Go towards the old man and tell him that you really need his help.",
-                    "Start running towards him to attack him",
+                    "Pick up a stick from the ground and run towards the man in an attempt to attack him and steal "
+                    "the wolves",
                     screen_width // 2, 400 - text_height // 2)
             case 12:
                 choice1_rect, choice2_rect, button_height = display_buttons(
