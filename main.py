@@ -1,6 +1,6 @@
-import pygame
 import sys
 import os
+import pygame
 
 # Set up colors
 WHITE = (255, 255, 255)
@@ -19,14 +19,14 @@ pygame.display.set_caption("Choose Your Own Adventure - Omnibus Forest")
 
 # Load and scale background images
 background_images = [
-    pygame.image.load(os.path.join('src', 'images', 'background1.jpg')).convert(),
-    pygame.image.load(os.path.join('src', 'images', 'background2.jpg')).convert(),
-    pygame.image.load(os.path.join('src', 'images', 'background3.jpg')).convert()
+    pygame.image.load(os.path.join('images', 'background1.jpg')).convert(),
+    pygame.image.load(os.path.join('images', 'background2.jpg')).convert(),
+    pygame.image.load(os.path.join('images', 'background3.jpg')).convert()
 ]
 background_images = [pygame.transform.scale(bg, (screen_width, screen_height)) for bg in background_images]
 
 # Load and scale character image
-character_image = pygame.image.load(os.path.join('src', 'images', 'character.png')).convert_alpha()
+character_image = pygame.image.load(os.path.join('images', 'character.png')).convert_alpha()
 character_height = screen_height // 2.5
 original_character_rect = character_image.get_rect()
 scale_factor = character_height / original_character_rect.height
@@ -434,13 +434,12 @@ def main():
             case 11:
                 choice1_rect, choice2_rect, button_height = display_buttons(
                     "Go towards the old man and tell him that you really need his help.",
-                    "Start running towards him but the wolves jump you and knock you out…",
+                    "Start running towards him to attack him",
                     screen_width // 2, 400 - text_height // 2)
             case 12:
                 choice1_rect, choice2_rect, button_height = display_buttons(
-                    "Start taking all their stuff when a group of five big guys jump from the bushes and threaten you.",
-                    "Look around calling “come out wherever you are” and a little goth girl with pig tails comes out "
-                    "from the bushes and asks for her stuff back.",
+                    "Start taking all their stuff.",
+                    "Look around calling “come out wherever you are”.",
                     screen_width // 2, 400 - text_height // 2)
             case 111:
                 choice1_rect, choice2_rect, button_height = display_buttons(
